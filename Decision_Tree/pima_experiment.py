@@ -7,8 +7,6 @@ from IPython.display import Image
 from sklearn.tree import export_graphviz
 import pydotplus
 
-# TODO: The voters dataset is classified in the first column
-
 columns = ['pregnant', 'glucose', 'bp', 'skin', 'insulin', 'bmi', 'pedigree',
            'age', 'label']
 
