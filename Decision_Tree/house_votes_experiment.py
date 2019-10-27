@@ -32,8 +32,6 @@ for column in features:
 dataset = votes[features]
 labels = votes.label
 
-
-
 train_data_set, test_data_set, train_target_set, test_target_set = train_test_split(dataset,
                                                                                     labels,
                                                                                     shuffle=True,
