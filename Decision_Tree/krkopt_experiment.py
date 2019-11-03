@@ -27,7 +27,7 @@ classEncoding = {
     'sixteen': 16}
 
 columns = ['w_k_file', 'w_k_rank', 'w_r_file', 'w_r_rank', 'b_k_file', 'b_k_rank', 'label']
-krk = pd.read_csv("krkopt.data", header=None, names=columns)
+krk = pd.read_csv("../Datasets/krkopt.data", header=None, names=columns)
 
 krk.replace({
     "label": classEncoding

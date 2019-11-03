@@ -1,0 +1,15 @@
+Here's a quick reference to the datasets available in this folder, most of them are either downloaded from Kaggle
+ or the UCI website.
+
+ -- heart.csv:
+        Downloaded from: https://www.kaggle.com/ronitf/heart-disease-uci/download
+        This database contains 76 attributes, but all published experiments refer to using a subset of 14 of them.
+        In particular, the Cleveland database is the only one that has been used by ML researchers to this date.
+        The "goal" field refers to the presence of heart disease in the patient. It is integer valued from 0 (no
+        presence) to 4.
+
+ -- pima-indians-diabetes.csv:
+        This is the famous diabetes dataset and I can't remember where I got it from specifically but you can easily
+         google this
+
+ --krkopt.data:
