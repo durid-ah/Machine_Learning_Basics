@@ -1,0 +1,115 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neural_network import MLPClassifier
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+
+# This is the breast cancer dataset from https://archive.ics.uci.edu/ml/datasets/Breast+Cancer
+Columns = ["target", "age", "menopause", "tumor-size", "inv-nodes", "node-caps", "deg-malig", "breast", "breast-quad",
+           "irradiat"]
+
+patients = \
+    pd.read_csv("https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer/breast-cancer.data",
+                header=None,
+                names=Columns,
+                na_values='?')
+
+patients = patients.dropna()
+
+classification = {"no-recurrence-events": 0, "recurrence-events": 1}
+age = {
+    "10-19": 0,
+    "20-29": 1,
+    "30-39": 2,
+    "40-49": 3,
+    "50-59": 4,
+    "60-69": 5,
+    "70-79": 6,
+    "80-89": 7,
+    "90-99": 8
+}
+tumor_size = {
+    "0-4": 0,
+    "5-9": 1,
+    "10-14": 2,
+    "15-19": 3,
+    "20-24": 4,
+    "25-29": 5,
+    "30-34": 6,
+    "35-39": 7,
+    "40-44": 8,
+    "45-49": 9,
+    "50-54": 10,
+    "55-59": 11
+}
+
+inv_nodes = {
+    "0-2": 0,
+    "3-5": 1,
+    "6-8": 2,
+    "9-11": 3,
+    "12-14": 4,
+    "15-17": 5,
+    "18-20": 6,
+    "21-23": 7,
+    "24-26": 8,
+    "27-29": 9,
+    "30-32": 10,
+    "33-35": 11,
+    "36-39": 12
+}
+
+yes_no = {"yes": 1, "no": 0}
+left_right = {'left': 0, 'right': 1}
+quad = {"left_low": 0, "left_up": 1, "right_low": 2, "right_up": 3}
+menopause = {"premeno": 0, "lt40": 1, "ge40": 2}
+
+patients.replace({
+    "class": classification,
+    "age": age,
+    "tumor-size": tumor_size,
+    "inv-nodes": inv_nodes,
+    "node-caps": yes_no,
+    "irradiat": yes_no,
+    "breast": left_right,
+    "breast-quad": quad,
+    "menopause": menopause
+}, inplace=True)
+
+breast_column = patients.pop("breast")
+patients['left-breast'] = (breast_column == 0) * 1.0
+patients['right-breast'] = (breast_column == 1) * 1.0
+
+breast_quad_column = patients.pop("breast-quad")
+patients['left-low'] = (breast_quad_column == 0) * 1.0
+patients['left-up'] = (breast_quad_column == 1) * 1.0
+patients['right-low'] = (breast_quad_column == 2) * 1.0
+patients['right-up'] = (breast_quad_column == 3) * 1.0
+
+Features = ["age", "menopause", "tumor-size", "inv-nodes", "node-caps", "deg-malig", "left-breast", "right-breast",
+            "left-low", "left-up", "right-low","right-up", "irradiat"]
+
+dataset = patients[Features]
+labels = patients.target
+
+print(dataset)
+
+train_data_set, test_data_set, train_target_set, test_target_set = train_test_split(dataset,
+                                                                                    labels,
+                                                                                    shuffle=True,
+                                                                                    train_size=0.3)
+
+scaler = StandardScaler()
+scaler.fit(train_data_set)
+
+train_data_set = scaler.transform(train_data_set)
+test_data_set = scaler.transform(test_data_set)
+
+mlp = MLPClassifier(max_iter=1000)
+mlp.fit(train_data_set, train_target_set)
+predictions = mlp.predict(test_data_set)
+
+print(confusion_matrix(test_target_set,predictions))
+print(classification_report(test_target_set,predictions))
+print("Accuracy:", accuracy_score(test_target_set, predictions))
+
