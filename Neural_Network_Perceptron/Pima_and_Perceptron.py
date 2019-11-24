@@ -36,6 +36,14 @@ print("Accuracy:", accuracy_score(test_target_set, predictions))
 
 mlp_tuple = (100,)
 
+print("Number of neurons:")
+
+for k in range(1, 50):
+    classifier = MLPClassifier(hidden_layer_sizes=(k,), max_iter=1000)
+    classifier.fit(train_data_set, train_target_set)
+    pred = classifier.predict(test_data_set)
+    print("Accuracy:", accuracy_score(test_target_set, pred), k)
+
 for i in range(1000, 2001, 500):
     for j in range(3):
         classifier = MLPClassifier(hidden_layer_sizes=mlp_tuple, max_iter=i)

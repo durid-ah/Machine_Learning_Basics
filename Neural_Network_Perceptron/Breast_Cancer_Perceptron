@@ -86,8 +86,7 @@ patients['left-up'] = (breast_quad_column == 1) * 1.0
 patients['right-low'] = (breast_quad_column == 2) * 1.0
 patients['right-up'] = (breast_quad_column == 3) * 1.0
 
-Features = ["age", "menopause", "tumor-size", "inv-nodes", "node-caps", "deg-malig", "left-breast", "right-breast",
-            "left-low", "left-up", "right-low","right-up", "irradiat"]
+Features = ["age", "menopause", "tumor-size", "inv-nodes", "node-caps", "deg-malig", "irradiat"]
 
 dataset = patients[Features]
 labels = patients.target
@@ -105,11 +104,21 @@ scaler.fit(train_data_set)
 train_data_set = scaler.transform(train_data_set)
 test_data_set = scaler.transform(test_data_set)
 
-mlp = MLPClassifier(max_iter=1000)
+mlp = MLPClassifier(max_iter=200)
 mlp.fit(train_data_set, train_target_set)
 predictions = mlp.predict(test_data_set)
 
-print(confusion_matrix(test_target_set,predictions))
-print(classification_report(test_target_set,predictions))
+print(confusion_matrix(test_target_set, predictions))
+print(classification_report(test_target_set, predictions))
 print("Accuracy:", accuracy_score(test_target_set, predictions))
+
+for k in range(1, 10):
+    mlp_tuple = (k,)
+    for j in range(3):
+        classifier = MLPClassifier(hidden_layer_sizes=mlp_tuple, max_iter=200)
+        classifier.fit(train_data_set, train_target_set)
+        pred = classifier.predict(test_data_set)
+        print("Accuracy:", accuracy_score(test_target_set, pred), "Number of layers: ", j + 1, "Nodes: ", k)
+        mlp_tuple = mlp_tuple + (k,)
+
 
