@@ -4,13 +4,16 @@ import re
 # This script is dependent on the review_model_ngrams.bin file that can be downloaded from
 # https://drive.google.com/open?id=1bA0UfHDmA5T_LpiRsPfBHJVvuzXLnNbL
 # Warning! It's over 1GB in size
+# Binary File: It has been trained on the yelp reviews available at:
+# https://www.yelp.com/dataset/download
+# the data has been preprocessed using preprocess_dataset.py
+# Script Desc: Predicts the number of stars of a review
 
 
 def strip_formatting(string):
     string = string.lower()
     string = re.sub(r"([.!?,'/()])", r" \1 ", string)
     return string
-
 
 # Input reviews to be checked by the machine
 reviews = [
