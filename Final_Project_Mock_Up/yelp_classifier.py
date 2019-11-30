@@ -1,12 +1,18 @@
 import fasttext
 import re
 
+# This script is dependent on the review_model_ngrams.bin file that can be downloaded from
+# https://drive.google.com/open?id=1bA0UfHDmA5T_LpiRsPfBHJVvuzXLnNbL
+# Warning! It's over 1GB in size
+
+
 def strip_formatting(string):
     string = string.lower()
     string = re.sub(r"([.!?,'/()])", r" \1 ", string)
     return string
 
-# Reviews to check
+
+# Input reviews to be checked by the machine
 reviews = [
     "This restaurant literally changed my life. This is the best food I've ever eaten!",
     "I hate this place so much. They were mean to me.",
@@ -17,7 +23,7 @@ reviews = [
 preprocessed_reviews = list(map(strip_formatting, reviews))
 
 # Load the model
-classifier = fasttext.load_model('reviews_model.bin')
+classifier = fasttext.load_model('reviews_model_ngrams.bin')
 
 # Get fastText to classify each review with the model
 labels, probabilities = classifier.predict(preprocessed_reviews, 1)
@@ -26,7 +32,7 @@ labels, probabilities = classifier.predict(preprocessed_reviews, 1)
 for review, label, probability in zip(reviews, labels, probabilities):
     stars = int(label[0][-3])
 
-    print(stars)
-    print("({}% confidence)".format(int(probability[0] * 100)))
-    print(review)
+    print("* " * stars) # Print out the number of stars
+    print("({}% confidence)".format(int(probability[0] * 100))) # print out the confidence of the prediction
+    print(review) # Print the actual review
     print()
