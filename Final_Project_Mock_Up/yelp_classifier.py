@@ -15,6 +15,7 @@ def strip_formatting(string):
     string = re.sub(r"([.!?,'/()])", r" \1 ", string)
     return string
 
+
 # Input reviews to be checked by the machine
 reviews = [
     "This restaurant literally changed my life. This is the best food I've ever eaten!",
