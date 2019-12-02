@@ -4,7 +4,9 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.naive_bayes import GaussianNB
-from sklearn.ensemble import AdaBoostClassifier
+from sklearn.ensemble import AdaBoostClassifier, BaggingClassifier
+from sklearn.svm import SVC
+
 
 categories = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 categories = list(map(lambda x: x.upper(), categories))
@@ -26,6 +28,8 @@ train_data_set, test_data_set, train_target_set, test_target_set = model_selecti
                                                                                                     shuffle=True,
                                                                                                     train_size=0.3)
 
+
+# scaling the data
 scaler = StandardScaler()
 scaler.fit(train_data_set)
 
@@ -52,3 +56,26 @@ classifier.fit(train_data_set, train_target_set)
 prediction_result = classifier.predict(test_data_set)
 
 print("GaussianNB Accuracy:", metrics.accuracy_score(test_target_set, prediction_result))
+
+# AdaBoost
+dtc = DecisionTreeClassifier()
+svc = SVC(probability=True, kernel='linear')
+abc = AdaBoostClassifier(n_estimators=50,
+                         base_estimator=dtc,
+                         learning_rate=1)
+
+model = abc.fit(train_data_set, train_target_set)
+y_pred = model.predict(test_data_set)
+print("AdaBoost Accuracy:",metrics.accuracy_score(test_target_set, y_pred))
+
+# Bagging
+dtc2 = DecisionTreeClassifier()
+bag_model = BaggingClassifier(base_estimator=dtc2,
+                              n_estimators=100,
+                              bootstrap=True)
+
+bag_model = bag_model.fit(train_data_set, train_target_set)
+bagging_pred = bag_model.predict(test_data_set)
+print("Bagging Accuracy:",
+      metrics.accuracy_score(test_target_set, bagging_pred))
+
