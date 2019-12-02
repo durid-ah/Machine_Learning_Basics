@@ -28,7 +28,6 @@ train_data_set, test_data_set, train_target_set, test_target_set = model_selecti
                                                                                                     shuffle=True,
                                                                                                     train_size=0.3)
 
-
 # scaling the data
 scaler = StandardScaler()
 scaler.fit(train_data_set)
@@ -78,4 +77,3 @@ bag_model = bag_model.fit(train_data_set, train_target_set)
 bagging_pred = bag_model.predict(test_data_set)
 print("Bagging Accuracy:",
       metrics.accuracy_score(test_target_set, bagging_pred))
-

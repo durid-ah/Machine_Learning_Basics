@@ -1,20 +1,16 @@
 import pandas as pd
 from sklearn import model_selection, metrics
 from sklearn.preprocessing import StandardScaler
-from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import AdaBoostClassifier, BaggingClassifier
 from sklearn.svm import SVC
 
-columns =\
-    ["age", "sex", "cp", "trestbps", "chol", "fbs", "restecg", "thalach", "exang", "oldpeak", "slope",
-     "ca", "thal", "target"]
+soybeans = pd.read_csv("../Datasets/soybean-large.data", header=None, na_values='?')
+soybeans = soybeans.dropna()
 
-heart = pd.read_csv("../Datasets/heart.csv", na_values='?')
-
-dataset = heart[columns[:-1]]
-labels = heart[columns[-1]]
+dataset = soybeans[range(1,36)]
+labels = soybeans[0]
 
 train_data_set, test_data_set, train_target_set, test_target_set = model_selection.train_test_split(dataset,
                                                                                                     labels,
@@ -27,6 +23,13 @@ scaler.fit(train_data_set)
 
 train_data_set = scaler.transform(train_data_set)
 test_data_set = scaler.transform(test_data_set)
+
+# GaussianNB
+gnb = GaussianNB()
+gnb.fit(train_data_set, train_target_set)
+gnb_pred = gnb.predict(test_data_set)
+
+print("GaussianNB Accuracy:", metrics.accuracy_score(test_target_set, gnb_pred))
 
 # SVC classifier
 svc = SVC(probability=True, kernel='linear')
@@ -41,17 +44,11 @@ clf = clf.fit(train_data_set, train_target_set)
 predicted = clf.predict(test_data_set)
 print("Decision Tree Accuracy:", metrics.accuracy_score(test_target_set, predicted))
 
-# KNN classification
-classifier = KNeighborsClassifier(n_neighbors=5)
-classifier.fit(train_data_set, train_target_set)
-
-y_pred = classifier.predict(test_data_set)
-print("KNN Accuracy:", metrics.accuracy_score(test_target_set, y_pred))
-
 # AdaBoost
-gnb = GaussianNB()
+dtc = DecisionTreeClassifier()
+svc = SVC(probability=True, kernel='linear')
 abc = AdaBoostClassifier(n_estimators=50,
-                         base_estimator=gnb,
+                         base_estimator=dtc,
                          learning_rate=1)
 
 model = abc.fit(train_data_set, train_target_set)
@@ -59,8 +56,8 @@ y_pred = model.predict(test_data_set)
 print("AdaBoost Accuracy:",metrics.accuracy_score(test_target_set, y_pred))
 
 # Bagging
-dtc = DecisionTreeClassifier()
-bag_model = BaggingClassifier(base_estimator=dtc,
+dtc2 = DecisionTreeClassifier()
+bag_model = BaggingClassifier(base_estimator=dtc2,
                               n_estimators=100,
                               bootstrap=True)
 
